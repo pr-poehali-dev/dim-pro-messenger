@@ -6,12 +6,16 @@ import SearchPanel from '@/components/SearchPanel';
 import NotificationsPanel from '@/components/NotificationsPanel';
 import ProfilePanel from '@/components/ProfilePanel';
 import SettingsPanel from '@/components/SettingsPanel';
+import Auth from '@/pages/Auth';
 import { chats, notifications } from '@/data/mockData';
 
 type Tab = 'chats' | 'contacts' | 'search' | 'notifications' | 'profile' | 'settings';
 
 export default function Index() {
+  const [authed, setAuthed] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('chats');
+
+  if (!authed) return <Auth onAuth={() => setAuthed(true)} />;
 
   const unreadCount = chats.reduce((sum, c) => sum + c.unread, 0);
   const notificationCount = notifications.filter((n) => !n.read).length;
