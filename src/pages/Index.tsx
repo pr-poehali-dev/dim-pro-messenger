@@ -1,14 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import Sidebar from '@/components/Sidebar';
+import ChatsPanel from '@/components/ChatsPanel';
+import ContactsPanel from '@/components/ContactsPanel';
+import SearchPanel from '@/components/SearchPanel';
+import NotificationsPanel from '@/components/NotificationsPanel';
+import ProfilePanel from '@/components/ProfilePanel';
+import SettingsPanel from '@/components/SettingsPanel';
+import { chats, notifications } from '@/data/mockData';
 
-const Index = () => {
+type Tab = 'chats' | 'contacts' | 'search' | 'notifications' | 'profile' | 'settings';
+
+export default function Index() {
+  const [activeTab, setActiveTab] = useState<Tab>('chats');
+
+  const unreadCount = chats.reduce((sum, c) => sum + c.unread, 0);
+  const notificationCount = notifications.filter((n) => !n.read).length;
+
+  const renderPanel = () => {
+    switch (activeTab) {
+      case 'chats': return <ChatsPanel />;
+      case 'contacts': return <ContactsPanel />;
+      case 'search': return <SearchPanel />;
+      case 'notifications': return <NotificationsPanel />;
+      case 'profile': return <ProfilePanel />;
+      case 'settings': return <SettingsPanel />;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        notificationCount={notificationCount}
+        unreadCount={unreadCount}
+      />
+      <main className="flex flex-1 min-w-0 h-full">
+        {renderPanel()}
+      </main>
     </div>
   );
-};
-
-export default Index;
+}
